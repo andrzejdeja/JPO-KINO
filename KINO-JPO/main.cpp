@@ -22,7 +22,7 @@ room) in order to get the most audience and income.
 */
 
 std::map<int, Movie> movie;
-std::map<uint64_t, User> user;
+std::map<uint32_t, User> user;
 std::map<uint16_t, Room> room;
 std::map<int, Track> track;
 
@@ -161,9 +161,9 @@ int admin() {
 				if (std::stoi(buff) <= 0) throw;
 				short columns = (short)std::stoi(buff);
 				Room newroom(name, rows, columns);
-				room[(unsigned short)room.size()] = newroom;
+				room[(uint16_t)room.size()] = newroom;
 				std::cout << "Dodano sale:\n";
-				room[(unsigned short)room.size() - 1].display();
+				room[(uint16_t)room.size() - 1].display();
 			}
 			catch (...) {
 				std::cout << "ERR\n";
@@ -182,17 +182,17 @@ int admin() {
 				int num = std::stoi(buff) - 1;
 				if (num < room.size())
 				{
-					std::cout << "Podaj nowa nazwe (" << room.at(num).getName() << "):\n";
+					std::cout << "Podaj nowa nazwe (" << room.at(num).getName() << ") lub C aby pominac\n";
 					std::cin >> buff;
-					if (buff != "") room.at(num).setName(buff);
+					if (buff != "C") room.at(num).setName(buff);
 					std::cout << "Nowa nazwa to: " << room.at(num).getName() << "\n";
-					std::cout << "Podaj nowa ilosc rzedow w sali (" << room.at(num).getRows() << "):\n";
+					std::cout << "Podaj nowa ilosc rzedow w sali (" << room.at(num).getRows() << ") lub C aby pominac\n";
 					std::cin >> buff;
-					if (buff != "") room.at(num).setRows((short)stoi(buff));
+					if (buff != "C") room.at(num).setRows((short)stoi(buff));
 					std::cout << "Nowa ilosc rzedow w sali to: " << room.at(num).getRows() << "\n";
-					std::cout << "Podaj nowa ilosc miejsc w rzedzie (" << room.at(num).getColumns() << "):\n";
+					std::cout << "Podaj nowa ilosc miejsc w rzedzie (" << room.at(num).getColumns() << ") lub C aby pominac\n";
 					std::cin >> buff;
-					if (buff != "") room.at(num).setColumns((short)stoi(buff));
+					if (buff != "C") room.at(num).setColumns((short)stoi(buff));
 					std::cout << "Nowa ilosc miejsc w rzedzie to: " << room.at(num).getColumns() << "\n";
 				}
 				else throw;
@@ -223,10 +223,10 @@ int admin() {
 					int num2 = std::stoi(buff) - 1;
 					if (num2 < movie.size()) 
 					{
-						//time_t t;
-						//time(&t);
-						std::tm ntt;
-						//ntt = localtime(&t);
+						time_t t;
+						time(&t);
+						struct tm ntt;
+						localtime_s(&ntt, &t);
 						std::cout << "Podaj date sensu w formacie DDMMYYYY:\n";
 						std::cin >> buff;
 						if (buff.length() != 8) throw;
@@ -238,7 +238,8 @@ int admin() {
 						if (buff.length() != 4) throw;
 						ntt.tm_hour = std::stoi(buff.substr(0, 2));
 						ntt.tm_min = std::stoi(buff.substr(2, 2)) - 1;
-						Track newtrack((int)track.size(), num2, num1, ntt);
+						ntt.tm_sec = 0;
+						Track newtrack((int)track.size(), num2, num1, ntt); //TODO: FIND WHY (int)track.size() is negative "!?!?!?
 						track[(int)track.size()] = newtrack;
 						std::cout << "Dodano seans:\n";
 						track[(int)track.size() - 1].summarize();
@@ -265,14 +266,14 @@ int admin() {
 				if (num < track.size())
 				{
 					//MOVIE CHANGE
-					std::cout << "Wybierz film (" << track.at(num).getMovie() << ") lub kliknij enter\n";
+					std::cout << "Wybierz film (" << track.at(num).getMovie() << ") lub C aby pominac\n";
 					for (int i = 0; i < movie.size(); i++)
 					{
 						std::cout << i + 1 << ". ";
 						movie[i].getTitle();
 					}
 					std::cin >> buff;
-					if (buff != "") 
+					if (buff != "C") 
 					{
 						int num1 = std::stoi(buff) - 1;
 						if (num1 < movie.size())
@@ -283,14 +284,14 @@ int admin() {
 					}
 					else { std::cout << "Film bez zmian\n"; }
 					//ROOM CHANGE
-					std::cout << "Wybierz sale (" << track.at(num).getRoom() << ") lub kliknij enter\n";
+					std::cout << "Wybierz sale (" << track.at(num).getRoom() << ") lub C aby pominac\n";
 					for (int i = 0; i < room.size(); i++)
 					{
 						std::cout << i + 1 << ". ";
 						room[i].getName();
 					}
 					std::cin >> buff;
-					if (buff != "")
+					if (buff != "C")
 					{
 						int num1 = std::stoi(buff) - 1;
 						if (num1 < room.size())
@@ -301,8 +302,11 @@ int admin() {
 					}
 					else { std::cout << "Sala bez zmian\n"; }
 					//TIME CHANGE
-					std::tm ntt;
-					std::cout << "Podaj date sensu w formacie DDMMYYYY lub kliknij enter\n";
+					time_t t;
+					time(&t);
+					struct tm ntt;
+					localtime_s(&ntt, &t);
+					std::cout << "Podaj date sensu w formacie DDMMYYYY lub C aby pominac\n";
 					std::cin >> buff;
 					if (buff != "") 
 					{
@@ -311,18 +315,34 @@ int admin() {
 						ntt.tm_mon = std::stoi(buff.substr(2, 2)) - 1;
 						ntt.tm_year = std::stoi(buff.substr(4, 4)) - 1900;
 					}
-					else { std::cout << "Data bez zmiany\n"; }
-					std::cout << "Podaj godzine sensu w formacie HHMM:\n";
+					else
+					{
+						ntt.tm_mday = track.at(num).getTime().tm_mday;
+						ntt.tm_mon = track.at(num).getTime().tm_mon;
+						ntt.tm_year = track.at(num).getTime().tm_year;
+						std::cout << "Data bez zmiany\n";
+					}
+					std::cout << "Podaj godzine sensu w formacie HHMM lub C aby pominac\n";
 					std::cin >> buff;
 					if (buff != "")
 					{
 						if (buff.length() != 4) throw;
 						ntt.tm_hour = std::stoi(buff.substr(0, 2));
 						ntt.tm_min = std::stoi(buff.substr(2, 2)) - 1;
+						ntt.tm_sec = 0;
 					}
-					track[num].setTime = ntt;
+					else 
+					{
+						ntt.tm_hour = track.at(num).getTime().tm_hour;
+						ntt.tm_min = track.at(num).getTime().tm_min;
+						ntt.tm_sec = track.at(num).getTime().tm_sec;
+						std::cout << "Godzina bez zmiany\n";
+					}
+					//time_t t = mktime(&ntt);
+					//ntt = localtime(&t);
+					track.at(num).setTime(ntt);
 					std::cout << "Wprowadzono zmiany:\n";
-					track[num].summarize();
+					track.at(num).summarize();
 				}
 				else throw;
 			}

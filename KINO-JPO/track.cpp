@@ -41,5 +41,7 @@ void Track::setTime(std::tm _time)
 
 void Track::summarize()
 {
-	std::cout << "ID: " << track_id << "Sid: " << room_id << "Fid: " << movie_id << "\n";
+	char c[26];
+	asctime_s(c, 26, &time);
+	std::cout << "ID: " << track_id << " Sid: " << room_id << " Fid: " << movie_id << " Data: " << c << "\n";
 }
