@@ -5,10 +5,13 @@
 #include <vector>
 #include <string>
 #include <inttypes.h>
+#include <ctime>
 
 #include "movie.h"
 #include "user.h"
 #include "room.h"
+#include "track.h"
+
 /*
 59. Design and implement classes for a cinema booking system, user can select movie,
 room, time, seats and place order. The system includes following object: movie,
@@ -21,6 +24,7 @@ room) in order to get the most audience and income.
 std::map<int, Movie> movie;
 std::map<uint64_t, User> user;
 std::map<uint16_t, Room> room;
+std::map<int, Track> track;
 
 void setup();
 void shutdown();
@@ -48,8 +52,18 @@ int main()
 				uID = rand();
 				uID = (uID << 16) + rand();
 				f = 0;
-				for (int i = 0; i < user.size(); i++) {
-					if (uID == user[i].get_ID()) f = 1;
+				if (uID == 0) 
+				{
+					f = 1;
+					continue;
+				}
+				for (int i = 0; i < user.size(); i++)
+				{
+					if (uID == user[i].get_ID())
+					{
+						f = 1;
+						break;
+					}
 				}
 			}
 			pass = rand();
@@ -99,7 +113,7 @@ void serve(uint32_t num) {
 int admin() {
 	while (1) {
 		std::string buff = "";
-		std::cout << "a - dodaj film\nb - zmien tytul filmu\nc - dodaj sale\nd - edytuj sale\nexit - wyjdz z trybu administratora\nshutdown - zakoncz program\n";
+		std::cout << "a - dodaj film\nb - zmien tytul filmu\nc - dodaj sale\nd - edytuj sale\ne - dodaj seans\nf - edytuj seans\nexit - wyjdz z trybu administratora\nshutdown - zakoncz program\n";
 		std::cin >> buff;
 		if (buff == "a" || buff == "A") 
 		{
@@ -189,7 +203,51 @@ int admin() {
 		}
 		if (buff == "e" || buff == "E")
 		{
-
+			try {
+				std::cout << "Podaj numer sali\n";
+				for (int i = 0; i < room.size(); i++)
+				{
+					std::cout << i + 1 << ". ";
+					room[i].summarize();
+				}
+				std::cin >> buff;
+				int num1 = std::stoi(buff) - 1;
+				if (num1 < room.size())
+				{
+					std::cout << "Podaj numer filmu\n";
+					for (int i = 0; i < movie.size(); i++)
+					{
+						std::cout << i + 1 << ". " << movie[i].getTitle() << "\n";
+					}
+					std::cin >> buff;
+					int num2 = std::stoi(buff) - 1;
+					if (num2 < movie.size()) 
+					{
+						//time_t t;
+						//time(&t);
+						std::tm ntt;
+						//ntt = localtime(&t);
+						std::cout << "Podaj date sensu w formacie DDMMYYYY:\n";
+						std::cin >> buff;
+						if (buff.length() != 8) throw;
+						ntt.tm_mday = std::stoi(buff.substr(0, 2));
+						ntt.tm_mon = std::stoi(buff.substr(2, 2)) - 1;
+						ntt.tm_year = std::stoi(buff.substr(4, 4)) - 1900;
+						std::cout << "Podaj godzine sensu w formacie HHMM:\n";
+						std::cin >> buff;
+						if (buff.length() != 4) throw;
+						ntt.tm_hour = std::stoi(buff.substr(0, 2));
+						ntt.tm_min = std::stoi(buff.substr(2, 2)) - 1;
+						Track newtrack((int)track.size(), num2, num1, ntt);
+						track[track.size()] = newtrack;
+					}
+					else throw;
+				}
+				else throw;
+			}
+			catch (...) {
+				std::cout << "ERR\n";
+			}
 		}
 		if (buff == "f" || buff == "F")
 		{

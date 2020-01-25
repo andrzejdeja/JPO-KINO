@@ -4,12 +4,14 @@
 class Track
 {
 public:
-	Track(int, int, std::time_t);
+	Track();
+	Track(int, int, int, std::tm);
 	~Track();
 
 private:
+	int track_id;
 	int movie_id;
 	int room_id;
-	std::time_t time;
+	std::tm time;
 	
 };
