@@ -10,6 +10,12 @@ public:
 	~Room();
 	void display();
 	void summarize();
+	std::string getName();
+	short getRows();
+	short getColumns();
+	void setName(std::string);
+	void setRows(short);
+	void setColumns(short);
 private:
 	std::string name;
 	short columns;

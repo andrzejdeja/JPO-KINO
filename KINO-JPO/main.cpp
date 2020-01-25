@@ -99,7 +99,7 @@ void serve(uint32_t num) {
 int admin() {
 	while (1) {
 		std::string buff = "";
-		std::cout << "a - dodaj film\nb - zmien tytul filmu\nc - dodaj sale\nexit - wyjdz z trybu administratora\nshutdown - zakoncz program\n";
+		std::cout << "a - dodaj film\nb - zmien tytul filmu\nc - dodaj sale\nd - edytuj sale\nexit - wyjdz z trybu administratora\nshutdown - zakoncz program\n";
 		std::cin >> buff;
 		if (buff == "a" || buff == "A") 
 		{
@@ -154,6 +154,46 @@ int admin() {
 			catch (...) {
 				std::cout << "ERR\n";
 			}
+		}
+		if (buff == "d" || buff == "D")
+		{
+			std::cout << "Podaj numer sali\n";
+			for (int i = 0; i < room.size(); i++)
+			{
+				std::cout << i + 1 << ". ";
+				room[i].summarize();
+			}
+			std::cin >> buff;
+			try {
+				int num = std::stoi(buff) - 1;
+				if (num < room.size())
+				{
+					std::cout << "Podaj nowa nazwe (" << room.at(num).getName() << "):\n";
+					std::cin >> buff;
+					if (buff != "") room.at(num).setName(buff);
+					std::cout << "Nowa nazwa to: " << room.at(num).getName() << "\n";
+					std::cout << "Podaj nowa ilosc rzedow w sali (" << room.at(num).getRows() << "):\n";
+					std::cin >> buff;
+					if (buff != "") room.at(num).setRows((short)stoi(buff));
+					std::cout << "Nowa ilosc rzedow w sali to: " << room.at(num).getRows() << "\n";
+					std::cout << "Podaj nowa ilosc miejsc w rzedzie (" << room.at(num).getColumns() << "):\n";
+					std::cin >> buff;
+					if (buff != "") room.at(num).setColumns((short)stoi(buff));
+					std::cout << "Nowa ilosc miejsc w rzedzie to: " << room.at(num).getColumns() << "\n";
+				}
+				else throw;
+			}
+			catch (...) {
+				std::cout << "ERR\n";
+			}
+		}
+		if (buff == "e" || buff == "E")
+		{
+
+		}
+		if (buff == "f" || buff == "F")
+		{
+
 		}
 		if (buff == "shutdown") return 0;
 		if (buff == "exit") break;
