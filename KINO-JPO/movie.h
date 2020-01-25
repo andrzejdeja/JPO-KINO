@@ -4,6 +4,7 @@
 class Movie
 {
 public:
+	Movie();
 	Movie(std::string);
 	~Movie();
 	std::string getTitle();

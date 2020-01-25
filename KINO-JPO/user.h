@@ -4,10 +4,12 @@
 class User
 {
 public:
-	User(long, std::string);
+	User();
+	User(uint32_t, uint16_t);
 	~User();
-	bool match(std::string);
+	bool match(uint16_t);
+	uint32_t get_ID();
 private:
-	long id;
-	std::string password;
+	uint32_t id;
+	uint16_t password;
 };

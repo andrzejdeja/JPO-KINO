@@ -1,3 +1,4 @@
+#include <inttypes.h>
 #pragma once
 
 class Seat
@@ -5,10 +6,10 @@ class Seat
 public:
 	Seat();
 	~Seat();
-	void book(long);
+	void book(uint32_t);
 	void cancel();
 	bool is_booked();
 private:
 	bool booked;
-	long userID;
+	uint32_t userID;
 };

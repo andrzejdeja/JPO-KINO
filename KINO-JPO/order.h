@@ -9,11 +9,3 @@ public:
 private:
 
 };
-
-Order::Order()
-{
-}
-
-Order::~Order()
-{
-}
