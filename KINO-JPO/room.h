@@ -20,6 +20,5 @@ private:
 	std::string name;
 	short columns;
 	short rows;
-	Seat * seats;
 
 };

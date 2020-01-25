@@ -240,7 +240,7 @@ int admin() {
 						ntt.tm_hour = std::stoi(buff.substr(0, 2));
 						ntt.tm_min = std::stoi(buff.substr(2, 2)) - 1;
 						ntt.tm_sec = 0;
-						Track newtrack((int)track.size(), num2, num1, ntt); //TODO: FIND WHY (int)track.size() is negative !?!?!?
+						Track newtrack((int)track.size(), num2, num1, ntt, room.at(num1).getColumns(), room.at(num1).getRows()); //TODO: FIND WHY (int)track.size() is negative !?!?!?
 						track[(int)track.size()] = newtrack;
 						std::cout << "Dodano seans:\n";
 						track[(int)track.size() - 1].summarize();
@@ -363,26 +363,6 @@ void setup()
 		std::string buff[10];
 		int it = 0;
 		{
-			std::ifstream file("track.txt");
-			if (!file.is_open()) throw "track.txt not opened";
-			std::cout << "Loading tracks\n";
-			while (!file.eof())
-			{
-				for (int i = 0; i < 4; i++) {
-					if (!file.eof()) throw "reading track.txt failed";
-					std::getline(file, buff[i]);
-				}
-				struct tm tm1;
-				std::strftime((char *)&buff[3], sizeof(buff[3]), "%H%M%d%m%Y", &tm1);
-				Track _track(std::stoi(buff[0]), std::stoi(buff[1]), std::stoi(buff[2]), tm1);
-				track.at(std::stoi(buff[0])) = _track;
-				it++;
-			}
-			file.close();
-			std::cout << it << " tracks loaded\n";
-			it = 0;
-		}
-		{
 			std::ifstream file("room.txt");
 			if (!file.is_open()) throw "room.txt not opened";
 			std::cout << "Loading rooms\n";
@@ -398,6 +378,26 @@ void setup()
 			}
 			file.close();
 			std::cout << it << " rooms loaded\n";
+			it = 0;
+		}
+		{
+			std::ifstream file("track.txt");
+			if (!file.is_open()) throw "track.txt not opened";
+			std::cout << "Loading tracks\n";
+			while (!file.eof())
+			{
+				for (int i = 0; i < 4; i++) {
+					if (!file.eof()) throw "reading track.txt failed";
+					std::getline(file, buff[i]);
+				}
+				struct tm tm1;
+				std::strftime((char *)&buff[3], sizeof(buff[3]), "%H%M%d%m%Y", &tm1);
+				Track _track(std::stoi(buff[0]), std::stoi(buff[1]), std::stoi(buff[2]), tm1, room.at(std::stoi(buff[2])).getColumns(), room.at(std::stoi(buff[2])).getRows());
+				track.at(std::stoi(buff[0])) = _track;
+				it++;
+			}
+			file.close();
+			std::cout << it << " tracks loaded\n";
 			it = 0;
 		}
 		{
