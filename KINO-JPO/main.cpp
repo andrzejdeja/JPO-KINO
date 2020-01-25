@@ -239,7 +239,9 @@ int admin() {
 						ntt.tm_hour = std::stoi(buff.substr(0, 2));
 						ntt.tm_min = std::stoi(buff.substr(2, 2)) - 1;
 						Track newtrack((int)track.size(), num2, num1, ntt);
-						track[track.size()] = newtrack;
+						track[(int)track.size()] = newtrack;
+						std::cout << "Dodano seans:\n";
+						track[(int)track.size() - 1].summarize();
 					}
 					else throw;
 				}
@@ -251,7 +253,82 @@ int admin() {
 		}
 		if (buff == "f" || buff == "F")
 		{
-
+			std::cout << "Podaj numer seansu\n";
+			for (int i = 0; i < track.size(); i++)
+			{
+				std::cout << i + 1 << ". ";
+				track[i].summarize();
+			}
+			std::cin >> buff;
+			try {
+				int num = std::stoi(buff) - 1;
+				if (num < track.size())
+				{
+					//MOVIE CHANGE
+					std::cout << "Wybierz film (" << track.at(num).getMovie() << ") lub kliknij enter\n";
+					for (int i = 0; i < movie.size(); i++)
+					{
+						std::cout << i + 1 << ". ";
+						movie[i].getTitle();
+					}
+					std::cin >> buff;
+					if (buff != "") 
+					{
+						int num1 = std::stoi(buff) - 1;
+						if (num1 < movie.size())
+						{
+							track.at(num).setMovie(num1);
+							std::cout << "Nowy film: " << track.at(num).getMovie() << "\n";
+						}
+					}
+					else { std::cout << "Film bez zmian\n"; }
+					//ROOM CHANGE
+					std::cout << "Wybierz sale (" << track.at(num).getRoom() << ") lub kliknij enter\n";
+					for (int i = 0; i < room.size(); i++)
+					{
+						std::cout << i + 1 << ". ";
+						room[i].getName();
+					}
+					std::cin >> buff;
+					if (buff != "")
+					{
+						int num1 = std::stoi(buff) - 1;
+						if (num1 < room.size())
+						{
+							track.at(num).setRoom(num1);
+							std::cout << "Nowa sala: " << track.at(num).getRoom() << "\n";
+						}
+					}
+					else { std::cout << "Sala bez zmian\n"; }
+					//TIME CHANGE
+					std::tm ntt;
+					std::cout << "Podaj date sensu w formacie DDMMYYYY lub kliknij enter\n";
+					std::cin >> buff;
+					if (buff != "") 
+					{
+						if (buff.length() != 8) throw;
+						ntt.tm_mday = std::stoi(buff.substr(0, 2));
+						ntt.tm_mon = std::stoi(buff.substr(2, 2)) - 1;
+						ntt.tm_year = std::stoi(buff.substr(4, 4)) - 1900;
+					}
+					else { std::cout << "Data bez zmiany\n"; }
+					std::cout << "Podaj godzine sensu w formacie HHMM:\n";
+					std::cin >> buff;
+					if (buff != "")
+					{
+						if (buff.length() != 4) throw;
+						ntt.tm_hour = std::stoi(buff.substr(0, 2));
+						ntt.tm_min = std::stoi(buff.substr(2, 2)) - 1;
+					}
+					track[num].setTime = ntt;
+					std::cout << "Wprowadzono zmiany:\n";
+					track[num].summarize();
+				}
+				else throw;
+			}
+			catch (...) {
+				std::cout << "ERR\n";
+			}
 		}
 		if (buff == "shutdown") return 0;
 		if (buff == "exit") break;
