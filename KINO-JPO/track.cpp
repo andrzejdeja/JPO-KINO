@@ -20,6 +20,15 @@ Track::~Track()
 	delete[] seats;
 }
 
+void Track::clearSeats(int x) 
+{
+	for (int i = 0; i < x; i++) seats[i].cancel();
+}
+
+void Track::bookSeat(int x, int uid) {
+	seats[x].book(uid);
+}
+
 int Track::getID() { return track_id; }
 
 int Track::getMovie() { return movie_id; }
@@ -54,5 +63,5 @@ void Track::summarize()
 }
 
 char Track::getSeat(int x) {
-	return seats[x].is_booked() ? 'X' : 'o';
+	return seats[x].is_booked() ? 'X' : 'O';
 }

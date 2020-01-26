@@ -19,6 +19,10 @@ int User::get_ID() {
 	return id;
 }
 
+int User::get_pass() {
+	return password;
+}
+
 bool User::match(int _test) {
 	return password == _test;
 }

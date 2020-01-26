@@ -9,6 +9,7 @@ public:
 	~User();
 	bool match(int);
 	int get_ID();
+	int get_pass(); //...
 private:
 	int id;
 	int password;

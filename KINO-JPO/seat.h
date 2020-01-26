@@ -10,6 +10,6 @@ public:
 	void cancel();
 	bool is_booked();
 private:
-	bool booked;
-	int userID;
+	bool booked = false;
+	int userID = 0;
 };

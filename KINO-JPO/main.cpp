@@ -29,8 +29,9 @@ std::map<int, Movie> movie;
 std::map<int, User> user;
 std::map<int, Room> room;
 std::map<int, Track> track;
+std::map<int, Order> order;
 
-void setup();
+int setup();
 void save();
 void serve(int);
 int admin();
@@ -39,7 +40,7 @@ int main()
 {
 	srand((unsigned int)time(NULL));
 
-	setup();
+	if (!setup()) return -1;
 
 	std::string buff = "";
 	while (1) //main loop
@@ -71,7 +72,7 @@ int main()
 			}
 			pass = rand();
 			User newuser(uID, pass);
-			user[newuser.get_ID()] = newuser;
+			user[(int)user.size()] = newuser;
 			std::cout << "Twoj numer uzytkownika to " << uID << "\n";
 			std::cout << "Twoje haslo to " << pass << "\n";
 		}
@@ -92,19 +93,35 @@ int main()
 					uID = std::stoi(buff, 0, 10);
 					std::cout << "Podaj haslo\n";
 					std::cin >> buff;
-					if (user[uID].match((short)std::stoi(buff))) serve(uID);
+					int unb = 0;
+					for (int i = 0; i < (int)user.size(); i++)
+					{
+						if (user.at(i).get_ID() == uID)
+						{
+							unb = i;
+							break;
+						}
+					}
+					if (user[unb].match(std::stoi(buff))) 
+					{
+						serve(unb); 
+					}
+					else
+					{
+						std::cout << "Zle haslo\n"; //...
+					}
 				}
 				catch (...) { //TODO: zamienic na typy stoi, zrobic dla wszystkich catch
 					std::cout << "ERR\n";
 				}
 			}
-			else { serve(uID); }
+			else { serve((int)user.size() - 1); }
 		}
 	}
 	save();
 }
 
-void serve(int num) {
+void serve(int uid) {
 	std::string buff = "";
 	std::cout << "a - dodaj zamowienie\nb - wyswietl zamowienia\n";
 	std::cin >> buff;
@@ -115,8 +132,74 @@ void serve(int num) {
 		{
 			std::cout << i + 1 << ". " << movie.at(track[(int)i].getMovie()).getTitle() << "    "<< track[(int)i].getTimeStr() << "\n";
 		}
+		std::cin >> buff;
+		try {
+			size_t num = (size_t)std::stoul(buff) - 1;
+			if (num < track.size())
+			{
+				int times = 0;
+				std::cout << "Ile biletow chcesz zarezerwowac?\n";
+				std::cin >> times;
+				track.at((const int)num).clearSeats(room.at(track.at((const int)num).getRoom()).getColumns()*room.at(track.at((const int)num).getRoom()).getRows());
+				std::cout << "  ";
+				for (int j = 1; j <= room.at(track.at((const int)num).getRoom()).getColumns(); j++) std::cout << (j < 10 ? "  " : " ") << j;
+				std::cout << "\n";
+				for (int i = 0; i < room.at(track.at((const int)num).getRoom()).getRows(); i++)
+				{
+					std::cout << (i + 1 < 10 ? " " : "") << i + 1;
+					for (int j = 0; j < room.at(track.at((const int)num).getRoom()).getColumns(); j++)
+					{
+						std::cout << "  " << track.at((const int)num).getSeat(i*room.at(track.at((const int)num).getRoom()).getColumns() + j);
+					}
+					std::cout << "\n";
+				}
+				while (1) {
+					std::cout << "Wybierz rzad\n";
+					int row = 0;
+					std::cin >> row;
+					row--;
+					int free_seats = 0;
+					for (int i = room.at(track.at((const int)num).getRoom()).getColumns() * row; i < room.at(track.at((const int)num).getRoom()).getColumns() * (row + 1); i++)
+						if (track.at((const int)num).getSeat(i) == 'O') free_seats++;
+					if (free_seats < times)
+					{
+						std::cout << "Za malo miejsc w rzedzie\n";
+						continue;
+					}
+					for (int k = 0; k < times; k++)
+					{
+						int col = 0;
+						while (1)
+						{
+							std::cout << "Wybierz miejsce\n";
+							std::cin >> col;
+							if (track.at((const int)num).getSeat(room.at(track.at((const int)num).getRoom()).getColumns() * row + col - 1) == 'X') 
+							{
+								std::cout << "Wybrane miejsce jest zajete\n";
+								continue;
+							}
+							else break;
+						}
+						track.at((const int)num).bookSeat(room.at(track.at((const int)num).getRoom()).getColumns() * row + col - 1, uid);
+						if (k == 0) 
+						{
+							Order _order((int)order.size(), uid, (const int)num, 1);
+							order[(int)order.size()] = _order;
+						}
+						else { order[(int)order.size() - 1].incTickets(); }
+					}
+					std::cout << "Zarezerwowano\n";
+					break;
+				}
+			}
+			else { throw "wrong number"; }
+		}
+		catch (char * err) {
+			std::cout << "ERR: " << err << "\n";
+		}
+
 	}
-	if (buff == "b" || buff == "B") //edit order
+	if (buff == "b" || buff == "B") //see orders
 	{
 
 	}
@@ -251,8 +334,9 @@ int admin() {
 						ntt.tm_hour = std::stoi(buff.substr(0, 2));
 						ntt.tm_min = std::stoi(buff.substr(2, 2));
 						ntt.tm_sec = 0;
-						Track newtrack((const int)track.size(), (int)num2, (int)num1, ntt, room.at((const int)num1).getColumns(), room.at((const int)num1).getRows()); //TODO: FIND WHY (int)track.size() is negative !?!?!?
+						Track newtrack((const int)track.size(), (int)num2, (int)num1, ntt, room.at((const int)num1).getColumns(), room.at((const int)num1).getRows());
 						track[(int)track.size()] = newtrack;
+						track[(int)track.size() - 1].clearSeats(room.at(track[(int)track.size() - 1].getRoom()).getColumns() * room.at(track[(int)track.size() - 1].getRoom()).getRows());
 						std::cout << "Dodano seans:\n";
 						track[(int)track.size() - 1].summarize();
 					}
@@ -394,7 +478,7 @@ int admin() {
 	return 1;
 }
 
-void setup()
+int setup()
 {
 	try {
 		std::string buff[10];
@@ -465,10 +549,31 @@ void setup()
 			std::cout << it << " movies loaded\n";
 			it = 0;
 		}
+		{
+			std::ifstream file("user.txt");
+			if (!file.is_open()) throw "user.txt not opened";
+			std::cout << "Loading users\n";
+			std::getline(file, buff[0]);
+			while (!file.eof())
+			{
+				for (int i = 0; i < 2; i++) {
+					if (file.eof()) throw "reading user.txt failed";
+					std::getline(file, buff[i]);
+				}
+				User _user(std::stoi(buff[0]), std::stoi(buff[1]));
+				user[it] = _user;
+				it++;
+			}
+			file.close();
+			std::cout << it << " users loaded\n";
+			it = 0;
+		}
 		std::cout << "Setup complete\n";
+		return 1;
 	}
 	catch (const char* err) {
 		std::cout << "ERR: " << err << "\n";
+		return 1;
 	}
 	
 }
@@ -482,8 +587,8 @@ void save() {
 			for (size_t s = 0; s < room.size(); s++)
 			{
 				file << std::endl << room.at((const int)s).getName() << std::endl;
-				file << room.at((const int)s).getColumns() << std::endl;
-				file << room.at((const int)s).getRows();
+				file << room.at((const int)s).getRows() << std::endl;
+				file << room.at((const int)s).getColumns();
 			}
 			file.close();
 			std::cout << room.size() << " rooms saved\n";
@@ -514,6 +619,18 @@ void save() {
 			}
 			file.close();
 			std::cout << movie.size() << " movies saved\n";
+		}
+		{
+			std::ofstream file("user.txt", std::ios::trunc);
+			if (!file.is_open()) throw "user.txt not opened";
+			std::cout << "Saving users\n";
+			for (size_t s = 0; s < user.size(); s++)
+			{
+				file << std::endl << user.at((const int)s).get_ID() << std::endl;
+				file << user.at((const int)s).get_pass();
+			}
+			file.close();
+			std::cout << user.size() << " users saved\n";
 		}
 		std::cout << "Saving complete\n";
 	}
