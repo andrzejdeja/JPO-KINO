@@ -6,7 +6,7 @@ User::User()
 	password = 0;
 }
 
-User::User(uint32_t _id, uint16_t _password) : id(_id), password(_password)
+User::User(int _id, int _password) : id(_id), password(_password)
 {
 	 //HOW TO LEAK PASSWORDS 101
 }
@@ -15,10 +15,10 @@ User::~User()
 {
 }
 
-uint32_t User::get_ID() {
+int User::get_ID() {
 	return id;
 }
 
-bool User::match(uint16_t _test) {
+bool User::match(int _test) {
 	return password == _test;
 }

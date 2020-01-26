@@ -6,7 +6,7 @@ Seat::Seat() : booked(false), userID(0)
 Seat::~Seat()
 {}
 
-void Seat::book(uint32_t _userID)
+void Seat::book(int _userID)
 {
 	userID = _userID;
 	booked = true;

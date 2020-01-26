@@ -5,11 +5,11 @@ class User
 {
 public:
 	User();
-	User(uint32_t, uint16_t);
+	User(int, int);
 	~User();
-	bool match(uint16_t);
-	uint32_t get_ID();
+	bool match(int);
+	int get_ID();
 private:
-	uint32_t id;
-	uint16_t password;
+	int id;
+	int password;
 };
