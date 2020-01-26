@@ -14,6 +14,7 @@
 #include "user.h"
 #include "room.h"
 #include "track.h"
+#include "order.h"
 
 /*
 59. Design and implement classes for a cinema booking system, user can select movie,
@@ -109,7 +110,11 @@ void serve(int num) {
 	std::cin >> buff;
 	if (buff == "a" || buff == "A") //add order
 	{
-		
+		std::cout << "Wybierz seans\n";
+		for (size_t i = 0; i < track.size(); i++)
+		{
+			std::cout << i + 1 << ". " << movie.at(track[(int)i].getMovie()).getTitle() << "    "<< track[(int)i].getTimeStr() << "\n";
+		}
 	}
 	if (buff == "b" || buff == "B") //edit order
 	{
@@ -170,7 +175,7 @@ int admin() {
 				Room newroom(name, rows, columns);
 				room[(short)room.size()] = newroom;
 				std::cout << "Dodano sale:\n";
-				room[(short)room.size() - 1].display();
+				room[(short)room.size() - 1].summarize();
 			}
 			catch (char * err) {
 				std::cout << "ERR: " << err << "\n";
@@ -366,7 +371,8 @@ int admin() {
 		{
 			for (size_t i = 0; i < room.size(); i++)
 			{
-				std::cout << i + 1 << ". " << room[(int)i].getName() << "\n";
+				std::cout << i + 1 << ". ";
+				room[(int)i].summarize();
 			}
 		}
 		if (buff == "i" || buff == "I") //print out tracks
@@ -377,7 +383,10 @@ int admin() {
 				track[(int)i].summarize();
 			}
 		}
-		if (buff == "j" || buff == "J") //TODO: print out orders
+		if (buff == "j" || buff == "J") 
+		{
+		
+		}//TODO: print out orders
 		if (buff == "save") save();
 		if (buff == "shutdown") return 0;
 		if (buff == "exit") break;

@@ -28,13 +28,6 @@ void Room::setColumns(short _columns) { columns = _columns; }
 
 void Room::setRows(short _rows) { rows = _rows; }
 
-void Room::display()
-{
-	std::cout << "***\n" << name << "\n***\n";
-
-	std::cout << "***\n";
-}
-
 void Room::summarize()
 {
 	std::cout << "N: " << name << " R: " << rows << "C: " << columns << "\n";

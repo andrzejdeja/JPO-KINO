@@ -1,5 +1,6 @@
 #include "track.h"
 #include <iostream>
+#include <string>
 
 Track::Track()
 {
@@ -40,6 +41,11 @@ void Track::setRoom(int _id)
 void Track::setTime(std::tm _time)
 {
 	time = _time;
+}
+
+std::string Track::getTimeStr()
+{
+	return std::to_string(time.tm_hour) + ":" + std::to_string(time.tm_min) + " " + std::to_string(time.tm_mday) + "." + std::to_string(time.tm_mon + 1 )+ "." + std::to_string(time.tm_year + 1900);
 }
 
 void Track::summarize()

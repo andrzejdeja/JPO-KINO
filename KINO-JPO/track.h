@@ -1,4 +1,5 @@
 #include <ctime>
+#include <string>
 #include "seat.h"
 #pragma once
 
@@ -10,6 +11,7 @@ public:
 	~Track();
 
 	void summarize();
+	std::string getTimeStr();
 
 	int getID();
 	int getMovie();
