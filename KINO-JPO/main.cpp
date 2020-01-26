@@ -61,7 +61,7 @@ int main()
 				}
 				for (size_t i = 0; i < user.size(); i++)
 				{
-					if (uID == user[(const int)i].get_ID())
+					if (uID == user[(int)i].get_ID())
 					{
 						f = 1;
 						break;
@@ -93,7 +93,7 @@ int main()
 					std::cin >> buff;
 					if (user[uID].match((short)std::stoi(buff))) serve(uID);
 				}
-				catch (...) {
+				catch (...) { //TODO: zamienic na typy stoi, zrobic dla wszystkich catch
 					std::cout << "ERR\n";
 				}
 			}
@@ -142,10 +142,10 @@ int admin() {
 					movie.at((const int)num).modifyTitle(buff);
 					std::cout << "Nowy tytul to: " << movie.at((const int)num).getTitle() << "\n";
 				}
-				else throw;
+				else throw "wrong number";
 			}
-			catch (...) {
-				std::cout << "ERR\n";
+			catch (char * err) {
+				std::cout << "ERR: " << err << "\n";
 			}
 		}
 		if (buff == "c" || buff == "C")
@@ -156,19 +156,19 @@ int admin() {
 				std::string name = buff;
 				std::cout << "Podaj liczbe rzedow w sali\n";
 				std::cin >> buff;
-				if (std::stoi(buff) <= 0) throw;
+				if (std::stoi(buff) <= 0) throw "wrong number";
 				short rows = (short)std::stoi(buff);
 				std::cout << "Podaj liczbe miejsc w rzedzie\n";
 				std::cin >> buff;
-				if (std::stoi(buff) <= 0) throw;
+				if (std::stoi(buff) <= 0) throw "wrong number";
 				short columns = (short)std::stoi(buff);
 				Room newroom(name, rows, columns);
 				room[(short)room.size()] = newroom;
 				std::cout << "Dodano sale:\n";
 				room[(short)room.size() - 1].display();
 			}
-			catch (...) {
-				std::cout << "ERR\n";
+			catch (char * err) {
+				std::cout << "ERR: " << err << "\n";
 			}
 		}
 		if (buff == "d" || buff == "D")
@@ -177,7 +177,7 @@ int admin() {
 			for (size_t i = 0; i < room.size(); i++)
 			{
 				std::cout << i + 1 << ". ";
-				room[(const int)i].summarize();
+				room[(int)i].summarize();
 			}
 			std::cin >> buff;
 			try {
@@ -186,21 +186,21 @@ int admin() {
 				{
 					std::cout << "Podaj nowa nazwe (" << room.at((const int)num).getName() << ") lub C aby pominac\n";
 					std::cin >> buff;
-					if (buff != "C") room.at((const int)num).setName(buff);
+					if (buff != "C" && buff != "c") room.at((const int)num).setName(buff);
 					std::cout << "Nowa nazwa to: " << room.at((const int)num).getName() << "\n";
 					std::cout << "Podaj nowa ilosc rzedow w sali (" << room.at((const int)num).getRows() << ") lub C aby pominac\n";
 					std::cin >> buff;
-					if (buff != "C") room.at((const int)num).setRows((short)stoi(buff));
+					if (buff != "C" && buff != "c") room.at((const int)num).setRows((short)stoi(buff));
 					std::cout << "Nowa ilosc rzedow w sali to: " << room.at((const int)num).getRows() << "\n";
 					std::cout << "Podaj nowa ilosc miejsc w rzedzie (" << room.at((const int)num).getColumns() << ") lub C aby pominac\n";
 					std::cin >> buff;
-					if (buff != "C") room.at((const int)num).setColumns((short)stoi(buff));
+					if (buff != "C" && buff != "c") room.at((const int)num).setColumns((short)stoi(buff));
 					std::cout << "Nowa ilosc miejsc w rzedzie to: " << room.at((const int)num).getColumns() << "\n";
 				}
-				else throw;
+				else throw "wrong number";
 			}
-			catch (...) {
-				std::cout << "ERR\n";
+			catch (char * err) {
+				std::cout << "ERR: " << err << "\n";
 			}
 		}
 		if (buff == "e" || buff == "E")
@@ -210,7 +210,7 @@ int admin() {
 				for (size_t i = 0; i < room.size(); i++)
 				{
 					std::cout << i + 1 << ". ";
-					room[(const int)i].summarize();
+					room[(int)i].summarize();
 				}
 				std::cin >> buff;
 				size_t num1 = (size_t)std::stoul(buff) - 1;
@@ -219,7 +219,7 @@ int admin() {
 					std::cout << "Podaj numer filmu\n";
 					for (size_t i = 0; i < movie.size(); i++)
 					{
-						std::cout << i + 1 << ". " << movie[(const int)i].getTitle() << "\n";
+						std::cout << i + 1 << ". " << movie[(int)i].getTitle() << "\n";
 					}
 					std::cin >> buff;
 					size_t num2 = (size_t)std::stoul(buff) - 1;
@@ -231,27 +231,27 @@ int admin() {
 						localtime_s(&ntt, &t);
 						std::cout << "Podaj date sensu w formacie DDMMYYYY:\n";
 						std::cin >> buff;
-						if (buff.length() != 8) throw;
+						if (buff.length() != 8) throw "wrong date format";
 						ntt.tm_mday = std::stoi(buff.substr(0, 2));
 						ntt.tm_mon = std::stoi(buff.substr(2, 2)) - 1;
 						ntt.tm_year = std::stoi(buff.substr(4, 4)) - 1900;
 						std::cout << "Podaj godzine sensu w formacie HHMM:\n";
 						std::cin >> buff;
-						if (buff.length() != 4) throw;
+						if (buff.length() != 4) throw "wrong hour format";
 						ntt.tm_hour = std::stoi(buff.substr(0, 2));
-						ntt.tm_min = std::stoi(buff.substr(2, 2)) - 1;
+						ntt.tm_min = std::stoi(buff.substr(2, 2));
 						ntt.tm_sec = 0;
 						Track newtrack((const int)track.size(), (int)num2, (int)num1, ntt, room.at((const int)num1).getColumns(), room.at((const int)num1).getRows()); //TODO: FIND WHY (int)track.size() is negative !?!?!?
 						track[(int)track.size()] = newtrack;
 						std::cout << "Dodano seans:\n";
 						track[(int)track.size() - 1].summarize();
 					}
-					else throw;
+					else throw "wrong number";
 				}
-				else throw;
+				else throw "wrong number";
 			}
-			catch (...) {
-				std::cout << "ERR\n";
+			catch (char * err) {
+				std::cout << "ERR: " << err << "\n";
 			}
 		}
 		if (buff == "f" || buff == "F")
@@ -260,7 +260,7 @@ int admin() {
 			for (size_t i = 0; i < track.size(); i++)
 			{
 				std::cout << i + 1 << ". ";
-				track[(const int)i].summarize();
+				track[(int)i].summarize();
 			}
 			std::cin >> buff;
 			try {
@@ -268,38 +268,36 @@ int admin() {
 				if (num < track.size())
 				{
 					//MOVIE CHANGE
-					std::cout << "Wybierz film (" << track.at((const int)num).getMovie() << ") lub C aby pominac\n";
+					std::cout << "Wybierz film (" << track.at((const int)num).getMovie() + 1 << ") lub C aby pominac\n";
 					for (size_t i = 0; i < movie.size(); i++)
 					{
-						std::cout << i + 1 << ". ";
-						movie[(const int)i].getTitle();
+						std::cout << i + 1 << ". " << movie[(int)i].getTitle() << "\n";
 					}
 					std::cin >> buff;
-					if (buff != "C") 
+					if (buff != "C" && buff != "c")
 					{
 						size_t num1 = (size_t)std::stoul(buff) - 1;
 						if (num1 < movie.size())
 						{
 							track.at((const int)num).setMovie((const int)num1);
-							std::cout << "Nowy film: " << track.at((const int)num).getMovie() << "\n";
+							std::cout << "Nowy film: " << track.at((const int)num).getMovie() + 1 << "\n";
 						}
 					}
 					else { std::cout << "Film bez zmian\n"; }
 					//ROOM CHANGE
-					std::cout << "Wybierz sale (" << track.at((const int)num).getRoom() << ") lub C aby pominac\n";
+					std::cout << "Wybierz sale (" << track.at((const int)num).getRoom() + 1 << ") lub C aby pominac\n";
 					for (size_t i = 0; i < room.size(); i++)
 					{
-						std::cout << i + 1 << ". ";
-						room[(const int)i].getName();
+						std::cout << i + 1 << ". " << room[(int)i].getName() << "\n";
 					}
 					std::cin >> buff;
-					if (buff != "C")
+					if (buff != "C" && buff != "c")
 					{
 						size_t num1 = (size_t)std::stoul(buff) - 1;
 						if (num1 < room.size())
 						{
 							track.at((const int)num).setRoom((const int)num1);
-							std::cout << "Nowa sala: " << track.at((const int)num).getRoom() << "\n";
+							std::cout << "Nowa sala: " << track.at((const int)num).getRoom() + 1 << "\n";
 						}
 					}
 					else { std::cout << "Sala bez zmian\n"; }
@@ -310,9 +308,9 @@ int admin() {
 					localtime_s(&ntt, &t);
 					std::cout << "Podaj date sensu w formacie DDMMYYYY lub C aby pominac\n";
 					std::cin >> buff;
-					if (buff != "") 
+					if (buff != "C" && buff != "c") 
 					{
-						if (buff.length() != 8) throw;
+						if (buff.length() != 8) throw "wrong date";
 						ntt.tm_mday = std::stoi(buff.substr(0, 2));
 						ntt.tm_mon = std::stoi(buff.substr(2, 2)) - 1;
 						ntt.tm_year = std::stoi(buff.substr(4, 4)) - 1900;
@@ -326,11 +324,11 @@ int admin() {
 					}
 					std::cout << "Podaj godzine sensu w formacie HHMM lub C aby pominac\n";
 					std::cin >> buff;
-					if (buff != "")
+					if (buff != "C" && buff != "c")
 					{
-						if (buff.length() != 4) throw;
+						if (buff.length() != 4) throw "wrong hour";
 						ntt.tm_hour = std::stoi(buff.substr(0, 2));
-						ntt.tm_min = std::stoi(buff.substr(2, 2)) - 1;
+						ntt.tm_min = std::stoi(buff.substr(2, 2));
 						ntt.tm_sec = 0;
 					}
 					else 
@@ -346,10 +344,10 @@ int admin() {
 					std::cout << "Wprowadzono zmiany:\n";
 					track.at((const int)num).summarize();
 				}
-				else throw;
+				else throw "wrong number";
 			}
-			catch (...) {
-				std::cout << "ERR\n";
+			catch (char * err) {
+				std::cout << "ERR: " << err << "\n";
 			}
 		}
 		if (buff == "shutdown") return 0;
@@ -367,14 +365,15 @@ void setup()
 			std::ifstream file("room.txt");
 			if (!file.is_open()) throw "room.txt not opened";
 			std::cout << "Loading rooms\n";
+			std::getline(file, buff[0]);
 			while (!file.eof())
 			{
 				for (int i = 0; i < 3; i++) {
-					if (!file.eof()) throw "reading room.txt failed";
+					if (file.eof()) throw "reading room.txt failed";
 					std::getline(file, buff[i]);
 				}
 				Room _room(buff[0], (short)std::stoi(buff[1]), (short)std::stoi(buff[2]));
-				room.at(it) = _room;
+				room[it] = _room;
 				it++;
 			}
 			file.close();
@@ -385,17 +384,27 @@ void setup()
 			std::ifstream file("track.txt");
 			if (!file.is_open()) throw "track.txt not opened";
 			std::cout << "Loading tracks\n";
+			std::getline(file, buff[0]);
 			while (!file.eof())
 			{
 				for (int i = 0; i < 4; i++) {
-					if (!file.eof()) throw "reading track.txt failed";
+					if (file.eof()) throw "reading track.txt failed";
 					std::getline(file, buff[i]);
 				}
-				struct tm tm1;
-				std::istringstream input(buff[3]);
-				input >> std::get_time(&tm1, "%H%M%d%m%Y");
-				Track _track(std::stoi(buff[0]), std::stoi(buff[1]), std::stoi(buff[2]), tm1, room.at(std::stoi(buff[2])).getColumns(), room.at(std::stoi(buff[2])).getRows());
-				track.at(std::stoi(buff[0])) = _track;
+				time_t t;
+				time(&t);
+				struct tm ntt;
+				localtime_s(&ntt, &t);
+				ntt.tm_hour = std::stoi(buff[3].substr(0, 2));
+				ntt.tm_min = std::stoi(buff[3].substr(2, 2));
+				ntt.tm_sec = 0;
+				ntt.tm_mday = std::stoi(buff[3].substr(4, 2));
+				ntt.tm_mon = std::stoi(buff[3].substr(6, 2));
+				ntt.tm_year = std::stoi(buff[3].substr(8, 4));
+				//std::istringstream input(buff[3]);
+				//input >> std::get_time(&tm1, "%H%M%d%m%Y");
+				Track _track(std::stoi(buff[0]), std::stoi(buff[1]), std::stoi(buff[2]), ntt, room.at(std::stoi(buff[2])).getColumns(), room.at(std::stoi(buff[2])).getRows());
+				track[std::stoi(buff[0])] = _track;
 				it++;
 			}
 			file.close();
@@ -406,11 +415,12 @@ void setup()
 			std::ifstream file("movie.txt");
 			if (!file.is_open()) throw "movie.txt not opened";
 			std::cout << "Loading movies\n";
+			std::getline(file, buff[0]);
 			while (!file.eof())
 			{
 				std::getline(file, buff[0]);
 				Movie _movie(buff[0]);
-				movie.at(it) = _movie;
+				movie[it] = _movie;
 				it++;
 			}
 			file.close();
@@ -433,9 +443,9 @@ void save() {
 			std::cout << "Saving rooms\n";
 			for (size_t s = 0; s < room.size(); s++)
 			{
-				file << room.at((const int)s).getName() << std::endl;
+				file << std::endl << room.at((const int)s).getName() << std::endl;
 				file << room.at((const int)s).getColumns() << std::endl;
-				file << room.at((const int)s).getRows() << std::endl;
+				file << room.at((const int)s).getRows();
 			}
 			file.close();
 			std::cout << room.size() << " rooms saved\n";
@@ -444,15 +454,14 @@ void save() {
 			std::ofstream file("track.txt", std::ios::trunc );
 			if (!file.is_open()) throw "track.txt not opened";
 			std::cout << "Saving tracks\n";
-			std::string buff = "";
 			for (size_t s = 0; s < track.size(); s++)
 			{
-				file << track.at((const int)s).getID() << std::endl;
+				file << std::endl << track.at((const int)s).getID() << std::endl;
 				file << track.at((const int)s).getMovie() << std::endl;
 				file << track.at((const int)s).getRoom() << std::endl;
 				tm tm1 = track.at((const int)s).getTime();
-				std::strftime((char *)&buff, sizeof(buff), "%H%M%d%m%Y", &tm1);
-				file << buff << std::endl;
+				//std::strftime((char *)&buff, sizeof(buff), "%H%M%d%m%Y", &tm1);
+				file << (tm1.tm_hour < 10 ? "0" : "") << tm1.tm_hour << (tm1.tm_min < 10 ? "0" : "") << tm1.tm_min << (tm1.tm_mday < 10 ? "0" : "") << tm1.tm_mday << (tm1.tm_mon < 10 ? "0" : "") << tm1.tm_mon << (tm1.tm_year < 1000 ? "0" : "") << tm1.tm_year;
 			}
 			file.close();
 			std::cout << track.size() << " tracks saved\n";
@@ -463,7 +472,7 @@ void save() {
 			std::cout << "Saving movies\n";
 			for (size_t s = 0; s < track.size(); s++)
 			{
-				file << movie.at((const int)s).getTitle() << std::endl;
+				file << std::endl << movie.at((const int)s).getTitle();
 			}
 			file.close();
 			std::cout << movie.size() << " movies saved\n";

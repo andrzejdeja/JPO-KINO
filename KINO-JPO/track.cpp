@@ -44,9 +44,7 @@ void Track::setTime(std::tm _time)
 
 void Track::summarize()
 {
-	char c[26];
-	asctime_s(c, 26, &time);
-	std::cout << "ID: " << track_id << " Sid: " << room_id << " Fid: " << movie_id << " Data: " << c << "\n";
+	std::cout << "ID: " << track_id + 1 << " Sid: " << room_id + 1 << " Fid: " << movie_id + 1 << " Data: " << time.tm_hour << ":" << time.tm_min << " " << time.tm_mday << "." << time.tm_mon + 1 << "." << time.tm_year + 1900 << "\n";
 }
 
 char Track::getSeat(int x) {
