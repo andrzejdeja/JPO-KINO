@@ -1,6 +1,6 @@
-#pragma once
 #include <ctime>
 #include "seat.h"
+#pragma once
 
 class Track
 {

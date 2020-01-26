@@ -9,9 +9,9 @@ Track::Track()
 	seats = new Seat[1];
 }
 
-Track::Track(int _track_id, int _movie_id, int _room_id, std::tm _time, int columns, int rows) : movie_id(_movie_id), room_id(_room_id), time(_time)
+Track::Track(int _track_id, int _movie_id, int _room_id, std::tm _time, int columns, int rows) : track_id(_track_id), movie_id(_movie_id), room_id(_room_id), time(_time)
 {
-	seats = new Seat[columns*rows];
+	seats = new Seat[(size_t)(columns*rows)];
 }
 
 Track::~Track()

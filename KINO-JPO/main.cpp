@@ -134,7 +134,7 @@ int admin() {
 			}
 			std::cin >> buff;
 			try {
-				size_t num = (size_t)std::stoi(buff) - 1;
+				size_t num = (size_t)std::stoul(buff) - 1;
 				if ( num < movie.size())
 				{
 					std::cout << "Podaj nowy tytul " << movie.at((const int)num).getTitle() << ":\n";
@@ -181,7 +181,7 @@ int admin() {
 			}
 			std::cin >> buff;
 			try {
-				size_t num = std::stoi(buff) - 1;
+				size_t num = (size_t)std::stoul(buff) - 1;
 				if (num < room.size())
 				{
 					std::cout << "Podaj nowa nazwe (" << room.at((const int)num).getName() << ") lub C aby pominac\n";
@@ -213,7 +213,7 @@ int admin() {
 					room[(const int)i].summarize();
 				}
 				std::cin >> buff;
-				size_t num1 = std::stoi(buff) - 1;
+				size_t num1 = (size_t)std::stoul(buff) - 1;
 				if (num1 < room.size())
 				{
 					std::cout << "Podaj numer filmu\n";
@@ -222,7 +222,7 @@ int admin() {
 						std::cout << i + 1 << ". " << movie[(const int)i].getTitle() << "\n";
 					}
 					std::cin >> buff;
-					size_t num2 = std::stoi(buff) - 1;
+					size_t num2 = (size_t)std::stoul(buff) - 1;
 					if (num2 < movie.size()) 
 					{
 						time_t t;
@@ -264,7 +264,7 @@ int admin() {
 			}
 			std::cin >> buff;
 			try {
-				size_t num = std::stoi(buff) - 1;
+				size_t num = (size_t)std::stoul(buff) - 1;
 				if (num < track.size())
 				{
 					//MOVIE CHANGE
@@ -277,7 +277,7 @@ int admin() {
 					std::cin >> buff;
 					if (buff != "C") 
 					{
-						size_t num1 = std::stoi(buff) - 1;
+						size_t num1 = (size_t)std::stoul(buff) - 1;
 						if (num1 < movie.size())
 						{
 							track.at((const int)num).setMovie((const int)num1);
@@ -295,7 +295,7 @@ int admin() {
 					std::cin >> buff;
 					if (buff != "C")
 					{
-						size_t num1 = std::stoi(buff) - 1;
+						size_t num1 = (size_t)std::stoul(buff) - 1;
 						if (num1 < room.size())
 						{
 							track.at((const int)num).setRoom((const int)num1);
@@ -427,7 +427,6 @@ void setup()
 
 void save() {
 	try {
-		std::string buff[10];
 		{
 			std::ofstream file("room.txt", std::ios::trunc);
 			if (!file.is_open()) throw "room.txt not opened";
