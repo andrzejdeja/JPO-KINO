@@ -7,6 +7,8 @@
 #include <inttypes.h>
 #include <ctime>
 #include <fstream>
+#include <sstream>
+#include <iomanip>
 
 #include "movie.h"
 #include "user.h"
@@ -28,7 +30,7 @@ std::map<uint16_t, Room> room;
 std::map<int, Track> track;
 
 void setup();
-void shutdown();
+void save();
 void serve(uint32_t);
 int admin();
 
@@ -99,7 +101,7 @@ int main()
 			else { serve(uID); }
 		}
 	}
-	shutdown();
+	save();
 }
 
 void serve(uint32_t num) {
@@ -391,7 +393,8 @@ void setup()
 					std::getline(file, buff[i]);
 				}
 				struct tm tm1;
-				std::strftime((char *)&buff[3], sizeof(buff[3]), "%H%M%d%m%Y", &tm1);
+				std::istringstream input(buff[3]);
+				input >> std::get_time(&tm1, "%H%M%d%m%Y");
 				Track _track(std::stoi(buff[0]), std::stoi(buff[1]), std::stoi(buff[2]), tm1, room.at(std::stoi(buff[2])).getColumns(), room.at(std::stoi(buff[2])).getRows());
 				track.at(std::stoi(buff[0])) = _track;
 				it++;
@@ -423,4 +426,54 @@ void setup()
 	
 }
 
-void shutdown() {}
+void save() {
+	try {
+		std::string buff[10];
+		{
+			std::ofstream file("room.txt", std::ios::trunc);
+			if (!file.is_open()) throw "room.txt not opened";
+			std::cout << "Saving rooms\n";
+			for (size_t s = 0; s < room.size(); s++)
+			{
+				file << room.at(s).getName() << std::endl;
+				file << room.at(s).getColumns() << std::endl;
+				file << room.at(s).getRows() << std::endl;
+			}
+			file.close();
+			std::cout << room.size() << " rooms saved\n";
+		}
+		{
+			std::ofstream file("track.txt", std::ios::trunc );
+			if (!file.is_open()) throw "track.txt not opened";
+			std::cout << "Saving tracks\n";
+			std::string buff = "";
+			for (size_t s = 0; s < track.size(); s++)
+			{
+				file << track.at(s).getID() << std::endl;
+				file << track.at(s).getMovie() << std::endl;
+				file << track.at(s).getRoom() << std::endl;
+				tm tm1 = track.at(s).getTime();
+				std::strftime((char *)&buff, sizeof(buff), "%H%M%d%m%Y", &tm1);
+				file << buff << std::endl;
+			}
+			file.close();
+			std::cout << track.size() << " tracks saved\n";
+		}
+		{
+			std::ofstream file("movie.txt", std::ios::trunc);
+			if (!file.is_open()) throw "movie.txt not opened";
+			std::cout << "Saving movies\n";
+			for (size_t s = 0; s < track.size(); s++)
+			{
+				file << movie.at(s).getTitle() << std::endl;
+			}
+			file.close();
+			std::cout << movie.size() << " movies saved\n";
+		}
+		std::cout << "Saving complete\n";
+	}
+	catch (const char* err) {
+		std::cout << "ERR: " << err << "\n";
+	}
+
+}
