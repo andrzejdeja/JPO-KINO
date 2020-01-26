@@ -43,7 +43,7 @@ int main()
 	std::string buff = "";
 	while (1) //main loop
 	{
-		std::cout << "Witamy w kinie!\nPodaj numer uzytkownika lub wpisz \"nowy\", aby utworzyc nowe zamowienie\n";
+		std::cout << "Witamy w kinie!\nPodaj numer uzytkownika lub wpisz \"nowy\"\n";
 		std::cin >> buff;
 		int uID = 0; 
 		int pass = 0;
@@ -105,19 +105,24 @@ int main()
 
 void serve(int num) {
 	std::string buff = "";
-	std::cout << "a - dodaj zamowienie\n";
+	std::cout << "a - dodaj zamowienie\nb - wyswietl zamowienia\n";
 	std::cin >> buff;
-	if (buff == "a" || buff == "A") {
+	if (buff == "a" || buff == "A") //add order
+	{
 		
+	}
+	if (buff == "b" || buff == "B") //edit order
+	{
+
 	}
 }
 
 int admin() {
 	while (1) {
 		std::string buff = "";
-		std::cout << "a - dodaj film\nb - zmien tytul filmu\nc - dodaj sale\nd - edytuj sale\ne - dodaj seans\nf - edytuj seans\nexit - wyjdz z trybu administratora\nshutdown - zakoncz program\n";
+		std::cout << "a - dodaj film\nb - zmien tytul filmu\nc - dodaj sale\nd - edytuj sale\ne - dodaj seans\nf - edytuj seans\ng - wyswietl filmy\nh - wyswietl sale\ni - wyswietl seanse\nj - wyswietl zamowienia\nsave - zapisz stan\nexit - wyjdz z trybu administratora\nshutdown - zakoncz program\n";
 		std::cin >> buff;
-		if (buff == "a" || buff == "A") 
+		if (buff == "a" || buff == "A") //new movie
 		{
 			std::cout << "Podaj tytul nowego filmu\n";
 			std::cin >> buff;
@@ -125,7 +130,7 @@ int admin() {
 			movie[(int)movie.size()] = newmovie;
 			std::cout << "Dodano film: " << movie[(int)movie.size() - 1].getTitle() << "\n";
 		}
-		if (buff == "b" || buff == "B") 
+		if (buff == "b" || buff == "B") //edit movie
 		{
 			std::cout << "Podaj numer filmu\n";
 			for (size_t i = 0; i < movie.size(); i++)
@@ -148,7 +153,7 @@ int admin() {
 				std::cout << "ERR: " << err << "\n";
 			}
 		}
-		if (buff == "c" || buff == "C")
+		if (buff == "c" || buff == "C") //new room
 		{	
 			try {
 				std::cout << "Podaj nazwe sali\n";
@@ -171,7 +176,7 @@ int admin() {
 				std::cout << "ERR: " << err << "\n";
 			}
 		}
-		if (buff == "d" || buff == "D")
+		if (buff == "d" || buff == "D") //edit room
 		{
 			std::cout << "Podaj numer sali\n";
 			for (size_t i = 0; i < room.size(); i++)
@@ -203,7 +208,7 @@ int admin() {
 				std::cout << "ERR: " << err << "\n";
 			}
 		}
-		if (buff == "e" || buff == "E")
+		if (buff == "e" || buff == "E") //new track
 		{
 			try {
 				std::cout << "Podaj numer sali\n";
@@ -254,7 +259,7 @@ int admin() {
 				std::cout << "ERR: " << err << "\n";
 			}
 		}
-		if (buff == "f" || buff == "F")
+		if (buff == "f" || buff == "F") //edit track 
 		{
 			std::cout << "Podaj numer seansu\n";
 			for (size_t i = 0; i < track.size(); i++)
@@ -350,6 +355,30 @@ int admin() {
 				std::cout << "ERR: " << err << "\n";
 			}
 		}
+		if (buff == "g" || buff == "G") //print out movies
+		{
+			for (size_t i = 0; i < movie.size(); i++)
+			{
+				std::cout << i + 1 << ". " << movie[(int)i].getTitle() << "\n";
+			}
+		}
+		if (buff == "h" || buff == "H") //print out rooms
+		{
+			for (size_t i = 0; i < room.size(); i++)
+			{
+				std::cout << i + 1 << ". " << room[(int)i].getName() << "\n";
+			}
+		}
+		if (buff == "i" || buff == "I") //print out tracks
+		{
+			for (size_t i = 0; i < track.size(); i++)
+			{
+				std::cout << i + 1 << ". ";
+				track[(int)i].summarize();
+			}
+		}
+		if (buff == "j" || buff == "J") //TODO: print out orders
+		if (buff == "save") save();
 		if (buff == "shutdown") return 0;
 		if (buff == "exit") break;
 	}
