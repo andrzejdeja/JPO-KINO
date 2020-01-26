@@ -134,7 +134,7 @@ int admin() {
 			}
 			std::cin >> buff;
 			try {
-				size_t num = std::stoi(buff) - 1;
+				size_t num = (size_t)std::stoi(buff) - 1;
 				if ( num < movie.size())
 				{
 					std::cout << "Podaj nowy tytul " << movie.at((const int)num).getTitle() << ":\n";
