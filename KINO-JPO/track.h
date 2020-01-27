@@ -20,6 +20,7 @@ public:
 	int getRoom();
 	std::tm getTime();
 	char getSeat(int);
+	int getSeatUID(int);
 	void setMovie(int);
 	void setRoom(int);
 	void setTime(std::tm);

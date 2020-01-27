@@ -9,6 +9,7 @@ public:
 	void book(int);
 	void cancel();
 	bool is_booked();
+	int getUID();
 private:
 	bool booked = false;
 	int userID = 0;

@@ -65,3 +65,7 @@ void Track::summarize()
 char Track::getSeat(int x) {
 	return seats[x].is_booked() ? 'X' : 'O';
 }
+
+int Track::getSeatUID(int x) {
+	return seats[x].getUID();
+}

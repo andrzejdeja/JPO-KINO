@@ -22,3 +22,5 @@ bool Seat::is_booked()
 {
 	return booked;
 }
+
+int Seat::getUID() { return userID; }
