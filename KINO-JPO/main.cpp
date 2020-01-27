@@ -218,7 +218,6 @@ void serve(int uid) {
 					std::cout << i + 1 << ". " << movie.at(track.at(order.at(i).getTrack()).getMovie()).getTitle() << "   ";
 					std::cout << track.at(order.at(i).getTrack()).getTimeStr() << "  Bilety: " << order.at(i).getTickets() << "\n";
 					orderlist[counter] = i;
-					std::cout << orderlist.at(counter) << " " << counter << "\n";
 					counter++;
 				}
 			}
@@ -607,7 +606,7 @@ int setup()
 					std::getline(file, buff[4]);
 					std::getline(file, buff[5]);
 					if (buff[4] == "X")
-						track.at(std::stoi(buff[0])).seats.at((size_t)i).book(std::stoi(buff[5]));
+						track.at(std::stoi(buff[0])).bookSeat(i, std::stoi(buff[5]));
 				}
 				it++;
 			}
@@ -682,7 +681,7 @@ int setup()
 	catch (std::out_of_range err) {
 		std::cout << "ERR: out_of_range:" << err.what() << "\n";
 	}
-	
+
 }
 
 void save() {
@@ -701,7 +700,7 @@ void save() {
 			std::cout << room.size() << " rooms saved\n";
 		}
 		{
-			std::ofstream file("track.txt", std::ios::trunc );
+			std::ofstream file("track.txt", std::ios::trunc);
 			if (!file.is_open()) throw "track.txt not opened";
 			std::cout << "Saving tracks\n";
 			for (size_t s = 0; s < track.size(); s++)
