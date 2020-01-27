@@ -113,11 +113,11 @@ int main()
 						std::cout << "Zle haslo\n"; //...
 					}
 				}
-				catch (std::invalid_argument) {
-					std::cout << "ERR: no conversion could be performed\n";
+				catch (std::invalid_argument err) {
+					std::cout << "ERR: std::invalid_argument:" << err.what() << "\n";
 				}
-				catch (std::out_of_range) {
-					std::cout << "ERR: the converted value would fall out of the range of the result type or the underlying function(std::strtol or std::strtoll) set errno to ERANGE\n";
+				catch (std::out_of_range err) {
+					std::cout << "ERR: out_of_range:" << err.what() << "\n";
 				}
 			}
 			else { serve((int)user.size() - 1); }
@@ -137,7 +137,7 @@ void serve(int uid) {
 			std::cout << "Wybierz seans\n";
 			for (size_t i = 0; i < track.size(); i++)
 			{
-				std::cout << i + 1 << ". " << movie.at(track[(int)i].getMovie()).getTitle() << "    " << track[(int)i].getTimeStr() << "\n";
+				std::cout << i + 1 << ". " << movie.at(track.at((int)i).getMovie()).getTitle() << "    " << track.at((int)i).getTimeStr() << "\n";
 			}
 			std::cin >> buff;
 			try {
@@ -147,7 +147,7 @@ void serve(int uid) {
 					int times = 0;
 					std::cout << "Ile biletow chcesz zarezerwowac?\n";
 					std::cin >> times;
-					track.at((const int)num).clearSeats(room.at(track.at((const int)num).getRoom()).getColumns()*room.at(track.at((const int)num).getRoom()).getRows());
+					//track.at((const int)num).clearSeats(room.at(track.at((const int)num).getRoom()).getColumns() * room.at(track.at((const int)num).getRoom()).getRows());
 					std::cout << "  ";
 					for (int j = 1; j <= room.at(track.at((const int)num).getRoom()).getColumns(); j++) std::cout << (j < 10 ? "  " : " ") << j;
 					std::cout << "\n";
@@ -155,7 +155,7 @@ void serve(int uid) {
 					{
 						std::cout << (i + 1 < 10 ? " " : "") << i + 1;
 						for (int j = 0; j < room.at(track.at((const int)num).getRoom()).getColumns(); j++)
-							std::cout << "  " << track.at((const int)num).getSeat(i*room.at(track.at((const int)num).getRoom()).getColumns() + j);
+							std::cout << "  " << track.at((const int)num).getSeat(i * room.at(track.at((const int)num).getRoom()).getColumns() + j);
 						std::cout << "\n";
 					}
 					while (1) {
@@ -188,10 +188,10 @@ void serve(int uid) {
 							track.at((const int)num).bookSeat(room.at(track.at((const int)num).getRoom()).getColumns() * row + col - 1, uid);
 							if (k == 0)
 							{
-								Order _order((int)order.size(), uid, (const int)num, 1);
+								Order _order((int)order.size(), uid, (int)num, 1);
 								order[(int)order.size()] = _order;
 							}
-							else { order[(int)order.size() - 1].incTickets(); }
+							else { order.at((int)order.size() - 1).incTickets(); }
 						}
 						std::cout << "Zarezerwowano\n";
 						break;
@@ -202,11 +202,11 @@ void serve(int uid) {
 			catch (char * err) {
 				std::cout << "ERR: " << err << "\n";
 			}
-			catch (std::invalid_argument) {
-				std::cout << "ERR: no conversion could be performed\n";
+			catch (std::invalid_argument err) {
+				std::cout << "ERR: std::invalid_argument:" << err.what() << "\n";
 			}
-			catch (std::out_of_range) {
-				std::cout << "ERR: the converted value would fall out of the range of the result type or the underlying function(std::strtol or std::strtoll) set errno to ERANGE\n";
+			catch (std::out_of_range err) {
+				std::cout << "ERR: out_of_range:" << err.what() << "\n";
 			}
 
 		}
@@ -222,7 +222,7 @@ void serve(int uid) {
 					std::cout << i + 1 << ". " << movie.at(track.at(order.at(i).getTrack()).getMovie()).getTitle() << "   ";
 					std::cout << track.at(order.at(i).getTrack()).getTimeStr() << "  Bilety: " << order.at(i).getTickets() << "\n";
 					orderlist[counter] = i;
-					std::cout << orderlist.at(counter);
+					std::cout << orderlist.at(counter) << " " << counter << "\n";
 					counter++;
 				}
 			}
@@ -239,22 +239,25 @@ void serve(int uid) {
 				if (num < counter) 
 				{
 					std::cout << "Zarezerwowane miejsca: \n";
-					for (int i = 0; i < room.at(track.at(order.at(orderlist.at(num)).getTrack()).getRoom()).getColumns() * room.at(track.at(order.at(orderlist.at(num)).getTrack()).getRoom()).getRows(); i++)
+					for (int i = 0; i < room.at(track.at(order.at(0).getTrack()).getRoom()).getColumns() * room.at(track.at(order.at(0).getTrack()).getRoom()).getRows(); i++)
+					{
+						std::cout << "wtf2\n";
 						if (track.at(order.at(orderlist.at(num)).getTrack()).getSeatUID(i) == uid) std::cout << "R:" << (i / (room.at(track.at(order.at(orderlist.at(num)).getTrack()).getRoom()).getColumns() + 1)) + 1 << " M: " << (i % (room.at(track.at(order.at(orderlist.at(num)).getTrack()).getRoom()).getColumns() + 1)) + 1 << "\n"; else
 						{
 							std::cout << "wtf\n";
 						}
+					}
 				}
 				else throw "wrong number";
 			}
 			catch (char * err) {
 				std::cout << "ERR: " << err << "\n";
 			}
-			catch (std::invalid_argument) {
-				std::cout << "ERR: no conversion could be performed\n";
+			catch (std::invalid_argument err) {
+				std::cout << "ERR: std::invalid_argument:" << err.what() << "\n";
 			}
-			catch (std::out_of_range) {
-				std::cout << "ERR: the converted value would fall out of the range of the result type or the underlying function(std::strtol or std::strtoll) set errno to ERANGE\n";
+			catch (std::out_of_range err) {
+				std::cout << "ERR: out_of_range:" << err.what() << "\n";
 			}
 		}
 		if (buff == "exit") break;
@@ -293,11 +296,11 @@ int admin() {
 				}
 				else throw "wrong number";
 			}
-			catch (std::invalid_argument) {
-				std::cout << "ERR: no conversion could be performed\n";
+			catch (std::invalid_argument err) {
+				std::cout << "ERR: std::invalid_argument:" << err.what() << "\n";
 			}
-			catch (std::out_of_range) {
-				std::cout << "ERR: the converted value would fall out of the range of the result type or the underlying function(std::strtol or std::strtoll) set errno to ERANGE\n";
+			catch (std::out_of_range err) {
+				std::cout << "ERR: out_of_range:" << err.what() << "\n";
 			}
 		}
 		if (buff == "c" || buff == "C") //new room
@@ -322,11 +325,11 @@ int admin() {
 			catch (char * err) {
 				std::cout << "ERR: " << err << "\n";
 			}
-			catch (std::invalid_argument) {
-				std::cout << "ERR: no conversion could be performed\n";
+			catch (std::invalid_argument err) {
+				std::cout << "ERR: std::invalid_argument:" << err.what() << "\n";
 			}
-			catch (std::out_of_range) {
-				std::cout << "ERR: the converted value would fall out of the range of the result type or the underlying function(std::strtol or std::strtoll) set errno to ERANGE\n";
+			catch (std::out_of_range err) {
+				std::cout << "ERR: out_of_range:" << err.what() << "\n";
 			}
 		}
 		if (buff == "d" || buff == "D") //edit room
@@ -360,11 +363,11 @@ int admin() {
 			catch (char * err) {
 				std::cout << "ERR: " << err << "\n";
 			}
-			catch (std::invalid_argument) {
-				std::cout << "ERR: no conversion could be performed\n";
+			catch (std::invalid_argument err) {
+				std::cout << "ERR: std::invalid_argument:" << err.what() << "\n";
 			}
-			catch (std::out_of_range) {
-				std::cout << "ERR: the converted value would fall out of the range of the result type or the underlying function(std::strtol or std::strtoll) set errno to ERANGE\n";
+			catch (std::out_of_range err) {
+				std::cout << "ERR: out_of_range:" << err.what() << "\n";
 			}
 		}
 		if (buff == "e" || buff == "E") //new track
@@ -407,9 +410,9 @@ int admin() {
 						ntt.tm_sec = 0;
 						Track newtrack((const int)track.size(), (int)num2, (int)num1, ntt, room.at((const int)num1).getColumns(), room.at((const int)num1).getRows());
 						track[(int)track.size()] = newtrack;
-						track[(int)track.size() - 1].clearSeats(room.at(track[(int)track.size() - 1].getRoom()).getColumns() * room.at(track[(int)track.size() - 1].getRoom()).getRows());
+						track.at((int)track.size() - 1).clearSeats(room.at(track[(int)track.size() - 1].getRoom()).getColumns() * room.at(track[(int)track.size() - 1].getRoom()).getRows());
 						std::cout << "Dodano seans:\n";
-						track[(int)track.size() - 1].summarize();
+						track.at((int)track.size() - 1).summarize();
 					}
 					else throw "wrong number";
 				}
@@ -418,11 +421,11 @@ int admin() {
 			catch (char * err) {
 				std::cout << "ERR: " << err << "\n";
 			}
-			catch (std::invalid_argument) {
-				std::cout << "ERR: no conversion could be performed\n";
+			catch (std::invalid_argument err) {
+				std::cout << "ERR: std::invalid_argument:" << err.what() << "\n";
 			}
-			catch (std::out_of_range) {
-				std::cout << "ERR: the converted value would fall out of the range of the result type or the underlying function(std::strtol or std::strtoll) set errno to ERANGE\n";
+			catch (std::out_of_range err) {
+				std::cout << "ERR: out_of_range:" << err.what() << "\n";
 			}
 		}
 		if (buff == "f" || buff == "F") //edit track 
@@ -520,18 +523,18 @@ int admin() {
 			catch (char * err) {
 				std::cout << "ERR: " << err << "\n";
 			}
-			catch (std::invalid_argument) {
-				std::cout << "ERR: no conversion could be performed\n";
+			catch (std::invalid_argument err) {
+				std::cout << "ERR: std::invalid_argument:" << err.what() << "\n";
 			}
-			catch (std::out_of_range) {
-				std::cout << "ERR: the converted value would fall out of the range of the result type or the underlying function(std::strtol or std::strtoll) set errno to ERANGE\n";
+			catch (std::out_of_range err) {
+				std::cout << "ERR: out_of_range:" << err.what() << "\n";
 			}
 		}
 		if (buff == "g" || buff == "G") //print out movies
 		{
 			for (size_t i = 0; i < movie.size(); i++)
 			{
-				std::cout << i + 1 << ". " << movie[(int)i].getTitle() << "\n";
+				std::cout << i + 1 << ". " << movie.at((int)i).getTitle() << "\n";
 			}
 		}
 		if (buff == "h" || buff == "H") //print out rooms
@@ -539,7 +542,7 @@ int admin() {
 			for (size_t i = 0; i < room.size(); i++)
 			{
 				std::cout << i + 1 << ". ";
-				room[(int)i].summarize();
+				room.at((int)i).summarize();
 			}
 		}
 		if (buff == "i" || buff == "I") //print out tracks
@@ -547,13 +550,17 @@ int admin() {
 			for (size_t i = 0; i < track.size(); i++)
 			{
 				std::cout << i + 1 << ". ";
-				track[(int)i].summarize();
+				track.at((int)i).summarize();
 			}
 		}
 		if (buff == "j" || buff == "J") 
 		{
-		
-		}//TODO: print out orders
+			for (size_t i = 0; i < order.size(); i++)
+			{
+				std::cout << i + 1 << ". ";
+				order.at((int)i).summarize();
+			}
+		}
 		if (buff == "save") save();
 		if (buff == "shutdown") return 0;
 		if (buff == "exit") break;
@@ -658,11 +665,11 @@ int setup()
 		std::cout << "ERR: " << err << "\n";
 		return 1;
 	}
-	catch (std::invalid_argument) {
-		std::cout << "ERR: no conversion could be performed\n";
+	catch (std::invalid_argument err) {
+		std::cout << "ERR: std::invalid_argument:" << err.what() << "\n";
 	}
-	catch (std::out_of_range) {
-		std::cout << "ERR: the converted value would fall out of the range of the result type or the underlying function(std::strtol or std::strtoll) set errno to ERANGE\n";
+	catch (std::out_of_range err) {
+		std::cout << "ERR: out_of_range:" << err.what() << "\n";
 	}
 	
 }
@@ -694,6 +701,10 @@ void save() {
 				tm tm1 = track.at((const int)s).getTime();
 				//std::strftime((char *)&buff, sizeof(buff), "%H%M%d%m%Y", &tm1);
 				file << (tm1.tm_hour < 10 ? "0" : "") << tm1.tm_hour << (tm1.tm_min < 10 ? "0" : "") << tm1.tm_min << (tm1.tm_mday < 10 ? "0" : "") << tm1.tm_mday << (tm1.tm_mon < 10 ? "0" : "") << tm1.tm_mon << (tm1.tm_year < 1000 ? "0" : "") << tm1.tm_year;
+				for (int i = 0; i < room.at(track.at((const int)s).getRoom()).getColumns() * room.at(track.at((const int)s).getRoom()).getRows(); i++)
+				{
+					file << "\n" << track.at((const int)s).getSeat(i) << "\n" << track.at((const int)s).getSeatUID(i);
+				}
 			}
 			file.close();
 			std::cout << track.size() << " tracks saved\n";

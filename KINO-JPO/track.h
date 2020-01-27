@@ -1,11 +1,14 @@
 #include <ctime>
 #include <string>
+#include <vector>
 #include "seat.h"
 #pragma once
 
 class Track
 {
 public:
+	std::vector<Seat> seats;
+
 	Track();
 	Track(int, int, int, std::tm, int, int);
 	~Track();
@@ -30,6 +33,5 @@ private:
 	int movie_id;
 	int room_id;
 	std::tm time;
-	Seat * seats;
-	
+		
 };

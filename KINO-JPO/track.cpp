@@ -7,26 +7,26 @@ Track::Track()
 	track_id = 0;
 	movie_id = 0;
 	room_id = 0;
-	seats = new Seat[1];
 }
 
 Track::Track(int _track_id, int _movie_id, int _room_id, std::tm _time, int columns, int rows) : track_id(_track_id), movie_id(_movie_id), room_id(_room_id), time(_time)
 {
-	seats = new Seat[(size_t)(columns*rows)];
+	Seat _seat;
+	for (int i = 0; i < columns*rows; i++)
+		seats.push_back(_seat);
 }
 
 Track::~Track()
 {
-	delete[] seats;
 }
 
 void Track::clearSeats(int x) 
 {
-	for (int i = 0; i < x; i++) seats[i].cancel();
+	for (Seat e : seats) e.cancel();
 }
 
 void Track::bookSeat(int x, int uid) {
-	seats[x].book(uid);
+	seats.at(x).book(uid);
 }
 
 int Track::getID() { return track_id; }

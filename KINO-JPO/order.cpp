@@ -47,4 +47,4 @@ int Order::getTickets() { return tickets; }
 
 void Order::incTickets() { tickets++; }
 
-void Order::summarize() { std::cout << "ID: " << orderID << " User: " << userID << "Track: " << trackID << "\n"; }
+void Order::summarize() { std::cout << "ID: " << orderID << " User: " << userID << "Track: " << trackID << " Tickets: " << tickets << "\n"; }
