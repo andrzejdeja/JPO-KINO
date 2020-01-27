@@ -20,13 +20,13 @@ Track::~Track()
 {
 }
 
-void Track::clearSeats(int x) 
+void Track::clearSeats() 
 {
 	for (Seat e : seats) e.cancel();
 }
 
 void Track::bookSeat(int x, int uid) {
-	seats.at(x).book(uid);
+	seats.at((size_t)x).book(uid);
 }
 
 int Track::getID() { return track_id; }
@@ -63,9 +63,9 @@ void Track::summarize()
 }
 
 char Track::getSeat(int x) {
-	return seats[x].is_booked() ? 'X' : 'O';
+	return seats.at((size_t)x).is_booked() ? 'X' : 'O';
 }
 
 int Track::getSeatUID(int x) {
-	return seats[x].getUID();
+	return seats.at((size_t)x).getUID();
 }

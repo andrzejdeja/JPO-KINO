@@ -1,14 +1,10 @@
-#include <iostream>
-#include <stdlib.h>
-#include <time.h> 
-#include <map>
-#include <vector>
-#include <string>
-#include <inttypes.h>
-#include <ctime>
-#include <fstream>
-#include <sstream>
-#include <iomanip>
+#include <iostream> //std
+#include <cstdlib> //stl
+#include <map> //std
+#include <vector> //stl
+#include <string> //std
+#include <ctime> //std time_t, tm, time(), localtime_s()
+#include <fstream> //std
 
 #include "movie.h"
 #include "user.h"
@@ -147,7 +143,7 @@ void serve(int uid) {
 					int times = 0;
 					std::cout << "Ile biletow chcesz zarezerwowac?\n";
 					std::cin >> times;
-					//track.at((const int)num).clearSeats(room.at(track.at((const int)num).getRoom()).getColumns() * room.at(track.at((const int)num).getRoom()).getRows());
+					//track.at((const int)num).clearSeats();
 					std::cout << "  ";
 					for (int j = 1; j <= room.at(track.at((const int)num).getRoom()).getColumns(); j++) std::cout << (j < 10 ? "  " : " ") << j;
 					std::cout << "\n";
@@ -402,7 +398,7 @@ int admin() {
 						ntt.tm_sec = 0;
 						Track newtrack((const int)track.size(), (int)num2, (int)num1, ntt, room.at((const int)num1).getColumns(), room.at((const int)num1).getRows());
 						track[(int)track.size()] = newtrack;
-						track.at((int)track.size() - 1).clearSeats(room.at(track[(int)track.size() - 1].getRoom()).getColumns() * room.at(track[(int)track.size() - 1].getRoom()).getRows());
+						track.at((int)track.size() - 1).clearSeats();
 						std::cout << "Dodano seans:\n";
 						track.at((int)track.size() - 1).summarize();
 					}

@@ -15,7 +15,7 @@ public:
 
 	void summarize();
 	std::string getTimeStr();
-	void clearSeats(int);
+	void clearSeats();
 	void bookSeat(int, int);
 
 	int getID();

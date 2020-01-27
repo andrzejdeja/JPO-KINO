@@ -8,7 +8,6 @@ public:
 	Room();
 	Room(std::string, short, short);
 	~Room();
-	void display();
 	void summarize();
 	std::string getName();
 	short getRows();

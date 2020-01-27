@@ -30,5 +30,5 @@ void Room::setRows(short _rows) { rows = _rows; }
 
 void Room::summarize()
 {
-	std::cout << "N: " << name << " R: " << rows << "C: " << columns << "\n";
+	std::cout << "N: " << name << " R: " << rows << " C: " << columns << "\n";
 }
